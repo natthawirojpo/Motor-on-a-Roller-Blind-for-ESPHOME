@@ -25,14 +25,19 @@ substitutions:
   devicename: roller_blind
   upper_devicename: Roller Blind
   mystepper: my_stepper # Name of the stepper motor (leave as is)
-  speed: 600 steps/s # Set the speed of the motor
+  speed: 500 steps/s # Set the speed of the motor
+  acceleration: 200 steps/s^2
+  deceleration: 200 steps/s^2
   reportin: "0" # Set if you want the blind to report position while moving (causes delay)
 
   pina: D1 # Swap these \_ coil a
   pinb: D3 # Swap these /
   pinc: D2 # Swap these \_ coil b
   pind: D4 # Swap these /
-
+ 
+  pin_button: GPIO23    # Button Pin
+  pin_led: GPIO2   # LED Pin active-low
+  
 # NOTE:  If you find that your shades are going the wrong way, you can change the pin
 #        settings or reverse the + and – wires for each of the A and B motor
 #        pairs on your driver and the motor will spin in the opposite direction.
@@ -42,6 +47,7 @@ substitutions:
 esp8266:
   board: d1_mini
   restore_from_flash: True
+  
 esphome:
   name: $devicename
   on_boot:
@@ -110,8 +116,8 @@ stepper:
     pin_d: $pind
     max_speed: ${speed} # Speed of the motor
     sleep_when_done: True
-    acceleration: inf
-    deceleration: inf
+    acceleration: ${acceleration}
+    deceleration: ${deceleration}
 
 globals:
   - id: ${mystepper}_global # Integer for storing the stepper position in case of reboot
@@ -166,7 +172,7 @@ text_sensor:
 binary_sensor:
   - platform: gpio
     pin:
-      number: D7 # Connect Button to D7 and GND
+      number: $pin_button # Connect Button to D7 and GND
       mode: INPUT_PULLUP
       inverted: True
     name: Button
@@ -247,7 +253,13 @@ switch:
         - globals.set:
             id: settingmode
             value:  '0'
-
+  - platform: gpio
+    pin:
+      number:  $pin_led  # เปลี่ยนเป็น GPIO2 (D4)
+      inverted: true # กำหนดให้ LED เป็น active-low
+    name: "LED"
+    id: builtin_led
+    restore_mode: ALWAYS_OFF
 button:
   - platform: template
     name: ${upper_devicename} Setup Button # Software Button to replicate the Physical Button
