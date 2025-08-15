@@ -30,12 +30,12 @@ substitutions:
   deceleration: 200 steps/s^2
   reportin: "0" # Set if you want the blind to report position while moving (causes delay)
 
-  pina: D1 # Swap these \_ coil a
-  pinb: D3 # Swap these /
-  pinc: D2 # Swap these \_ coil b
-  pind: D4 # Swap these /
+  pina: GPIO14 # Swap these \_ coil a
+  pinb: GPIO12 # Swap these /
+  pinc: GPIO13 # Swap these \_ coil b
+  pind: GPIO15 # Swap these /
  
-  pin_button: GPIO23    # Button Pin
+  pin_button: GPIO5    # Button Pin
   pin_led: GPIO2   # LED Pin active-low
   
 # NOTE:  If you find that your shades are going the wrong way, you can change the pin
